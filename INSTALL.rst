@@ -72,30 +72,30 @@ To install this WebSocket relay, you need to do the following:
   4. Set up your web server where you are hosting Spacewar to act as a
      reverse proxy, forwarding requests going to the path "/ws-relay"
      to this new WebSocket server. I use Caddy as my web server, and
-     this can be done with a single line of additional configuration:
+     this can be done with a single line of additional configuration::
 
-         reverse_proxy /ws-relay/* localhost:7927
+       reverse_proxy /ws-relay/* localhost:7927
 
      The "7927" here is the port number that `ws-relay.py`__ is configured
      to listen on by default.
 
-     __ spacewar/ws-relay.py
+     __ ws-relay/ws-relay.py
 
   5. To test the new setup, you can use the Python websocket command
      line client by running:
 
         python -m websockets wss://yourserver.example.com/ws-relay/test
 
-     If things are working, this should respond back with something like:
+     If things are working, this should respond back with something like::
 
         < 1 self
 
      If you run a second instance of the above command in another shell,
-     you should see the following in the first window:
+     you should see the following in the first window::
 
         < 2 join
 
-     The second window should show:
+     The second window should show::
 
         < 2 self
         < 1 join

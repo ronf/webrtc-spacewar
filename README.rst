@@ -1,7 +1,7 @@
 WebRTC Spacewar
 ===============
 
-WebRTC Spacewar is a browser-based recreation of the PDP-1 `Spacewar`__
+WebRTC Spacewar is a browser-based recreation of the PDP-1 `Spacewar!`__
 game, based on an X11 version I wrote in C back in 1992.
 
 __ https://en.wikipedia.org/wiki/Spacewar!
