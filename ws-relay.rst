@@ -35,6 +35,8 @@ file using the relay and it will add the `/ws-relay` to the beginning
 of the path and convert `https://` to `wss://` (the secure WebSocket
 URL scheme) to construct a URL suitable for contacting the relay.
 
+__ spacewar/ws-relay.js
+
 The messages sent to the WebSocket relay are a very simple text-based
 protocol of the form::
 
