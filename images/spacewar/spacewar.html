@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2020 by Ron Frederick <ronf@timeheart.net>
+
+  Permission is hereby granted, free of charge, to any person obtaining a
+  copy of this software and associated documentation files (the "Software"),
+  to deal in the Software without restriction, including without limitation
+  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+  and/or sell copies of the Software, and to permit persons to whom the
+  Software is furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  DEALINGS IN THE SOFTWARE.
+
+  SPDX-License-Identifier: MIT
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>WebRTC Spacewar</title>
+    <link rel="stylesheet" href="spacewar.css">
+    <script type="module" src="spacewar.js"></script>
+  </head>
+  <body>
+    <div class="center">
+      <canvas id="canvas" tabindex="0"></canvas>
+      <br>
+      Keys: A: rotate left, S: rotate right, K: thrust, L: launch missile,
+      Enter: enter hyperspace,
+      Z: zoom in, X: zoom out, R: reset view, Mouse click: re-center view,
+      C: configure, N: names on/off, O: observe on/off, P: pause/play
+    </div>
+
+    <div id="configPane" class="overlay round">
+      <label class="flex-row space-below">
+        Name:
+        <input id="nameField" type="text" size="10">
+      </label>
+      <label>
+        <input id="webRTCCheckbox" type="checkbox">
+        Use WebRTC
+      </label>
+      <label class="flex-row indent">
+        STUN/TURN server:
+        <input id="iceServerField" type="text" size=30>
+      </label>
+      <label class="flex-row indent justify">
+        Username:
+        <input id="iceUsernameField" type="text" size=30>
+      </label>
+      <label class="flex-row indent justify space-below">
+        Credential:
+        <input id="iceCredentialField" type="password" size=30>
+      </label>
+      <div class="flex-row justify">
+        <input id="resetButton" class="round" type="button" value="Reset">
+        <input id="cancelButton" class="round" type="button" value="Cancel">
+        <input id="okButton" class="round" type="button" value="OK">
+      </div>
+    </div>
+  </body>
+</html>

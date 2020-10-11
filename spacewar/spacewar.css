@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2020 by Ron Frederick <ronf@timeheart.net>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+canvas {
+  background-color: black;
+  outline: none;
+}
+
+input {
+  border: 1px solid white;
+  margin-left: 8px;
+  outline: none;
+  background-color: black;
+  color: white;
+}
+
+input[type=button]:hover {
+  background-color: white;
+  color: black;
+  transition-duration: 0.2s;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  margin: auto;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid white;
+  padding: 6px;
+  display: none;
+  flex-flow: column;
+}
+
+.center {
+  text-align: center;
+}
+
+.flex-row {
+  display: flex;
+  flex-flow: row;
+}
+
+.indent {
+  margin-left: 40px;
+}
+
+.justify {
+  justify-content: space-between;
+}
+
+.round {
+  border-radius: 6px;
+}
+
+.space-below {
+  margin-bottom: 10px;
+}
