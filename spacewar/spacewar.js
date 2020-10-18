@@ -63,6 +63,7 @@ function spacewar () {
 
   const defaultConfig = {
     name: '',
+    score: 0,
     useWebRTC: true,
     rtcConfig: { iceServers: iceServers }
   }
@@ -247,6 +248,7 @@ function spacewar () {
     constructor (id) {
       this.id = id
       this.name = ''
+      this.score = 0
       this.state = ShipStates.HYPERSPACED
       this.shape = shipShapes[id % shipShapes.length]
       this.rotation = 0
@@ -281,7 +283,7 @@ function spacewar () {
 
             if (showNames) {
               ctx.rotate(-grav.angle)
-              ctx.fillText(this.name, 0, 24)
+              ctx.fillText(`${this.name} (${this.score})`, 0, 24)
             }
           })
           break
@@ -339,6 +341,7 @@ function spacewar () {
         for (const missile of ship.missiles) {
           if (missile.lifetime >= MISSILE_ARM_TIME &&
               this.grav.testHit(missile.grav.xpos, missile.grav.ypos)) {
+            relay.send('score', ship.id)
             return true
           }
         }
@@ -351,6 +354,9 @@ function spacewar () {
       const grav = this.grav
       const cosang = Math.cos(grav.angle)
       const sinang = Math.sin(grav.angle)
+
+      this.score -= 1
+      saveConfig()
 
       this.state = ShipStates.DESTROYED
       this.lastActive = now
@@ -463,6 +469,8 @@ function spacewar () {
     iceServer.username = iceUsernameField.value
     iceServer.credential = iceCredentialField.value
 
+    if (myShip) config.score = myShip.score
+
     localStorage.spacewar = JSON.stringify(config)
   }
 
@@ -493,6 +501,8 @@ function spacewar () {
     myShip = new Ship(id)
 
     const now = performance.now()
+    myShip.name = config.name
+    myShip.score = config.score || 0
     myShip.placeRandom(now)
     lastTick = now
     requestAnimationFrame(tick)
@@ -506,6 +516,7 @@ function spacewar () {
     const offset = Date.now() - now
     const report = {
       name: myShip.name,
+      score: myShip.score,
       state: myShip.state,
       rotation: myShip.rotation,
       thrust: myShip.thrust,
@@ -548,6 +559,7 @@ function spacewar () {
     }
 
     ship.name = report.name
+    ship.score = report.score
     ship.state = report.state
     ship.rotation = report.rotation
     ship.thrust = report.thrust
@@ -574,6 +586,11 @@ function spacewar () {
       Object.assign(grav, missile.grav)
       ship.missiles.add(new Missile(grav, missile.lifetime))
     }
+  }
+
+  function updateScore (id) {
+    myShip.score += 1
+    saveConfig()
   }
 
   function keyDown (event) {
@@ -732,7 +749,6 @@ function spacewar () {
 
     if (paused) return
 
-    myShip.name = config.name
     myShip.rotation = (rotateRight - rotateLeft) * ROTATION
     myShip.thrust = thrust ? THRUST : 0
 
@@ -828,6 +844,7 @@ function spacewar () {
   relay.onself = setSelf
   relay.onquit = removeShip
   relay.onreport = recvReport
+  relay.onscore = updateScore
 
   initPaths()
   setupCanvas()
