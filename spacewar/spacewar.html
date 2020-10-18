@@ -37,7 +37,7 @@
       A: rotate left, S: rotate right, K: thrust, L: launch missile,
       Enter: enter hyperspace, Z: zoom in, X: zoom out, R: reset view,
       Mouse click: re-center view, C: configure, N: names on/off,
-      O: observe on/off, P: pause/play
+      O: observe on/off, P: pause/play, T: timing on/off
     </div>
 
     <div id="configPane" class="overlay round">
@@ -66,6 +66,24 @@
         <input id="cancelButton" class="round" type="button" value="Cancel">
         <input id="okButton" class="round" type="button" value="OK">
       </div>
+    </div>
+
+    <div id="timingPane" class="overlay round">
+      <table id="timingTable">
+        <thead>
+          <tr>
+            <th rowspan="2">Player</th>
+            <th rowspan="2">Connection</th>
+            <th colspan="3" class="center">Send delay (ms)</th>
+            <th colspan="3" class="center">Recv delay (ms)</th>
+          </tr>
+          <tr>
+            <th>Min</th><th>Avg</th><th>Max</th>
+            <th>Min</th><th>Avg</th><th>Max</th>
+          </tr>
+        </thead>
+        <tbody id="timingTableBody"></tbody>
+      </table>
     </div>
   </body>
 </html>

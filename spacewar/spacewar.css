@@ -46,11 +46,9 @@ input[type=button]:hover {
   color: white;
   margin: auto;
   position: absolute;
-  top: 40%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
   border: 2px solid white;
-  padding: 6px;
   display: none;
   flex-flow: column;
 }
@@ -76,6 +74,37 @@ input[type=button]:hover {
   border-radius: 6px;
 }
 
+.right {
+  text-align: right;
+}
+
 .space-below {
   margin-bottom: 10px;
+}
+
+#configPane {
+  top: 40%;
+  transform: translate(-50%, -100%);
+  padding: 6px;
+}
+
+#timingPane {
+  top: 10px;
+  padding: 2px;
+}
+
+#timingTable {
+  border-spacing: 10px 0;
+  margin: 0 -8px;
+  text-align: left;
+}
+
+#timingTable tr {
+  vertical-align: bottom;
+}
+
+#timingTable tr:nth-child(2) th,
+#timingTable tr td:nth-child(n+3):nth-child(-n+8) {
+  min-width: 6ch;
+  text-align: right;
 }

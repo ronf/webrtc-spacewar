@@ -82,6 +82,14 @@ class RTCPeer {
     await this.peerConn.setRemoteDescription({ type: 'answer', sdp: sdp })
   }
 
+  relayType () {
+    if (this.dataChannel && this.dataChannel.readyState === 'open') {
+      return 'WebRTC'
+    } else {
+      return 'WebSocket'
+    }
+  }
+
   send (message) {
     if (this.dataChannel && this.dataChannel.readyState === 'open') {
       this.dataChannel.send(message)
@@ -126,6 +134,12 @@ export default class WebRTCRelay {
 
     // Fall back to WebSocket messages if WebRTC setup fails
     this.wsRelay.onrecv = this.recv.bind(this)
+  }
+
+  relayType (target) {
+    const peer = this.peers.get(target)
+
+    return peer ? peer.relayType() : ''
   }
 
   send (message, target = '*') {

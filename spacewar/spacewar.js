@@ -25,11 +25,12 @@
 'use strict'
 
 /* global Path2D, location, localStorage, performance, requestAnimationFrame */
-/* global canvas, configPane, nameField, webRTCCheckbox */
+/* global canvas, configPane, nameField, timingPane, webRTCCheckbox */
 /* global iceServerField, iceUsernameField, iceCredentialField */
-/* global resetButton, cancelButton, okButton */
+/* global resetButton, cancelButton, okButton, timingTableBody */
 
 import iceServers from './ice.js'
+import TimingStats from './timing.js'
 import WebRTCRelay from './webrtc-relay.js'
 import WebSocketRelay from './ws-relay.js'
 
@@ -250,10 +251,13 @@ function spacewar () {
       this.shape = shipShapes[id % shipShapes.length]
       this.rotation = 0
       this.thrust = 0
+      this.recvDelay = 0
       this.lastActive = 0
       this.lastUpdate = 0
       this.lastLaunch = 0
       this.lastReport = 0
+      this.sendTiming = new TimingStats()
+      this.recvTiming = new TimingStats()
 
       this.grav = new Grav()
       this.debrisGrav = [...Array(DEBRIS_XPOS.length)].map(() => new Grav())
@@ -413,6 +417,19 @@ function spacewar () {
 
       this.lastUpdate = now
     }
+
+    reportTiming (table) {
+      if (this === myShip) return
+
+      const row = table.insertRow()
+      const values = [this.name, relay.relayType(this.id)].concat(
+        this.sendTiming.stats(), this.recvTiming.stats())
+
+      values.forEach(value => {
+        const cell = row.insertCell()
+        cell.innerHTML = value
+      })
+    }
   }
 
   function fillConfigPane (newConfig) {
@@ -468,6 +485,10 @@ function spacewar () {
     location.reload()
   }
 
+  function toggleTiming () {
+    timingPane.style.display = timingPane.style.display ? null : 'block'
+  }
+
   function setSelf (id) {
     myShip = new Ship(id)
 
@@ -488,7 +509,8 @@ function spacewar () {
       state: myShip.state,
       rotation: myShip.rotation,
       thrust: myShip.thrust,
-      lastUpdate: myShip.lastUpdate + offset
+      lastUpdate: myShip.lastUpdate + offset,
+      recvDelay: {}
     }
 
     switch (myShip.state) {
@@ -502,6 +524,12 @@ function spacewar () {
         break
     }
 
+    ships.forEach(ship => {
+      if (ship !== myShip) {
+        report.recvDelay[ship.id] = ship.recvDelay
+      }
+    })
+
     report.missiles = Array.from(myShip.missiles)
 
     relay.send(`report ${JSON.stringify(report)}`)
@@ -511,7 +539,6 @@ function spacewar () {
 
   function recvReport (id, message) {
     const now = performance.now()
-    const offset = Date.now() - now
     const report = JSON.parse(message)
 
     let ship = ships.get(id)
@@ -524,8 +551,14 @@ function spacewar () {
     ship.state = report.state
     ship.rotation = report.rotation
     ship.thrust = report.thrust
-    ship.lastUpdate = report.lastUpdate - offset
+    ship.recvDelay = Date.now() - report.lastUpdate
+    ship.lastUpdate = now - ship.recvDelay
     ship.lastReport = now
+
+    const sendDelay = report.recvDelay[myShip.id]
+    if (sendDelay) ship.sendTiming.insert(sendDelay, now)
+
+    ship.recvTiming.insert(ship.recvDelay, now)
 
     if (report.grav) Object.assign(ship.grav, report.grav)
 
@@ -613,6 +646,9 @@ function spacewar () {
           requestAnimationFrame(tick)
         }
 
+        break
+      case 't':
+        toggleTiming()
         break
       default:
         break
@@ -742,6 +778,9 @@ function spacewar () {
     if (reportNeeded || now - myShip.lastReport >= KEEPALIVE_TIME) {
       sendReport(now)
     }
+
+    timingTableBody.innerHTML = ''
+    ships.forEach(ship => ship.reportTiming(timingTableBody))
 
     if (trackedShip) {
       if (trackedShip.state === ShipStates.ACTIVE) {

@@ -37,6 +37,10 @@ export default class WebSocketRelay {
     this.ws.onmessage = this.recv.bind(this)
   }
 
+  relayType () {
+    return 'WebSocket'
+  }
+
   send (message, target = '*') {
     if (this.ws.readyState === 1) {
       this.ws.send(`${target} ${message}`)
