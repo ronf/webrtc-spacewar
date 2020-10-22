@@ -76,6 +76,7 @@ export default class TimingStats {
     this.low = new LowValueHistory()
     this.high = new HighValueHistory()
     this.avg = 0
+    this.skew = 0
     this.last = undefined
   }
 
@@ -94,9 +95,22 @@ export default class TimingStats {
     this.last = now
   }
 
+  min () {
+    return this.low.length !== 0 ? this.low[0].value : 0
+  }
+
+  max () {
+    return this.high.length !== 0 ? this.high.slice(-1)[0].value : 0
+  }
+
   stats () {
-    const min = this.low.length !== 0 ? this.low[0].value : 0
-    const max = this.high.length !== 0 ? this.high.slice(-1)[0].value : 0
-    return [min, Math.round(this.avg), max]
+    return [this.skew, this.min() - this.skew,
+	    Math.round(this.avg - this.skew),
+	    this.max() - this.skew]
+  }
+
+  updateSkew (other) {
+    this.skew = Math.round((this.min() - other.min()) / 2)
+    other.skew = -this.skew
   }
 }

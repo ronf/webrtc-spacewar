@@ -104,7 +104,7 @@ input[type=button]:hover {
 }
 
 #timingTable tr:nth-child(2) th,
-#timingTable tr td:nth-child(n+3):nth-child(-n+8) {
+#timingTable tr td:nth-child(n+3):nth-child(-n+9) {
   min-width: 6ch;
   text-align: right;
 }

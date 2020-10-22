@@ -429,7 +429,7 @@ function spacewar () {
 
       const row = table.insertRow()
       const values = [this.name, relay.relayType(this.id)].concat(
-        this.sendTiming.stats(), this.recvTiming.stats())
+        this.sendTiming.stats(), this.recvTiming.stats().slice(1))
 
       values.forEach(value => {
         const cell = row.insertCell()
@@ -571,6 +571,9 @@ function spacewar () {
     if (sendDelay) ship.sendTiming.insert(sendDelay, now)
 
     ship.recvTiming.insert(ship.recvDelay, now)
+
+    ship.sendTiming.updateSkew(ship.recvTiming)
+    ship.lastUpdate += ship.recvTiming.skew
 
     if (report.grav) Object.assign(ship.grav, report.grav)
 
