@@ -732,6 +732,11 @@ function spacewar () {
     }
   }
 
+  function mouseWheel (event) {
+    const zoom = event.deltaY / 1000
+    scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * Math.exp(zoom)))
+  }
+
   function setupCanvas () {
     canvas.width = canvas.height =
       Math.min(window.innerWidth - 16, window.innerHeight - 64)
@@ -831,6 +836,7 @@ function spacewar () {
   canvas.onkeydown = keyDown
   canvas.onkeyup = keyUp
   canvas.onclick = mouseClick
+  canvas.onwheel = mouseWheel
 
   resetButton.onclick = resetConfig
   cancelButton.onclick = revertConfig
