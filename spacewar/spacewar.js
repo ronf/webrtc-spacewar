@@ -119,12 +119,12 @@ function spacewar () {
 
   /* eslint-disable one-var */
   var config, relay, ctx, sunPath, missilePath, debrisPath
-  var origX = 0, origY = 0, scale = 1, trackedShip = null
+  var origX, origY, scale, trackedShip, lastX, lastY, lastScale
   var zoomIn = false, zoomOut = false
   var rotateLeft = false, rotateRight = false, thrust = false, fire = false
   var observeOnly = false, paused = false, showNames = true
   var reportNeeded = true, lastTick = 0
-  var myShip, ships = new Map()
+  var myShip, ships = new Map(), debugMsg = ''
   /* eslint-enable one-var */
 
   function initPaths () {
@@ -160,8 +160,7 @@ function spacewar () {
     }
 
     testHit (xpos, ypos, radius = 12) {
-      return Math.sqrt((this.xpos - xpos) ** 2 +
-                       (this.ypos - ypos) ** 2) <= radius
+      return Math.hypot(this.xpos - xpos, this.ypos - ypos) <= radius
     }
 
     placeRandom () {
@@ -512,6 +511,17 @@ function spacewar () {
     ships.delete(id)
   }
 
+  function resetZoom () {
+    origX = 0
+    origY = 0
+    scale = 1
+    trackedShip = null
+  }
+
+  function setScale (newScale) {
+    scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale))
+  }
+
   function sendReport (now) {
     const offset = Date.now() - now
     const report = {
@@ -639,10 +649,7 @@ function spacewar () {
         toggleConfig()
         break
       case 'r':
-        origX = 0
-        origY = 0
-        scale = 1
-        trackedShip = null
+        resetZoom()
         break
       case 'n':
         showNames = !showNames
@@ -711,6 +718,24 @@ function spacewar () {
     }
   }
 
+  function mouseDown (event) {
+    canvas.onmousemove = mouseMove
+  }
+
+  function mouseMove (event) {
+    if ((event.buttons & 1) === 0) {
+      canvas.onmousemove = null
+      return
+    }
+
+    origX -= event.movementX / scale
+    origY -= event.movementY / scale
+  }
+
+  function mouseUp (event) {
+    canvas.onmousemove = null
+  }
+
   function mouseClick (event) {
     if (event.button === 0) {
       const rect = canvas.getBoundingClientRect()
@@ -720,21 +745,52 @@ function spacewar () {
       const xpos = origX + (x - canvas.width / 2) / scale
       const ypos = origY + (y - canvas.height / 2) / scale
 
+      if (Math.hypot(xpos, ypos) <= 36) {
+        resetZoom()
+        return
+      }
+
       for (const ship of ships.values()) {
-        if (ship.grav.testHit(xpos, ypos, 24)) {
+        if (ship.grav.testHit(xpos, ypos, 36)) {
           trackedShip = ship
           return
         }
       }
-
-      origX = xpos
-      origY = ypos
     }
   }
 
   function mouseWheel (event) {
-    const zoom = event.deltaY / 1000
-    scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * Math.exp(zoom)))
+    setScale(scale * Math.exp(event.deltaY / 1000))
+  }
+
+  function touchStart (event) {
+    if (event.targetTouches.length === 1) {
+      const touch = event.targetTouches[0]
+
+      lastX = touch.clientX
+      lastY = touch.clientY
+    }
+  }
+
+  function touchMove (event) {
+    if (event.targetTouches.length === 1) {
+      const touch = event.targetTouches[0]
+
+      origX -= (touch.clientX - lastX) / scale
+      origY -= (touch.clientY - lastY) / scale
+      trackedShip = null
+
+      lastX = touch.clientX
+      lastY = touch.clientY
+    }
+  }
+
+  function gestureStart (event) {
+    lastScale = scale
+  }
+
+  function gestureChange (event) {
+    setScale(lastScale * event.scale)
   }
 
   function setupCanvas () {
@@ -827,6 +883,7 @@ function spacewar () {
     drawScaled(0, 0, 0, () => ctx.fill(sunPath))
     ships.forEach(ship => ship.draw())
 
+    drawScaled(0, -400, 0, () => ctx.fillText(debugMsg, 0, 24))
     lastTick = now
     requestAnimationFrame(tick)
   }
@@ -835,8 +892,18 @@ function spacewar () {
 
   canvas.onkeydown = keyDown
   canvas.onkeyup = keyUp
+
+  canvas.onmousedown = mouseDown
+  canvas.onmouseup = mouseUp
   canvas.onclick = mouseClick
   canvas.onwheel = mouseWheel
+
+  canvas.ontouchstart = touchStart
+  canvas.ontouchmove = touchMove
+  canvas.ontouchend = touchStart
+
+  canvas.ongesturestart = gestureStart
+  canvas.ongesturechange = gestureChange
 
   resetButton.onclick = resetConfig
   cancelButton.onclick = revertConfig
@@ -856,6 +923,7 @@ function spacewar () {
   relay.onscore = updateScore
 
   initPaths()
+  resetZoom()
   setupCanvas()
 }
 
