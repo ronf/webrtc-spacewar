@@ -794,9 +794,8 @@ function spacewar () {
   }
 
   function setupCanvas () {
-    canvas.width = canvas.height =
-      Math.min(window.innerWidth - 16, window.innerHeight - 64)
-    canvas.focus()
+    canvas.width = canvas.clientWidth
+    canvas.height = canvas.clientHeight
 
     ctx = canvas.getContext('2d')
     ctx.strokeStyle = 'white'
@@ -925,6 +924,8 @@ function spacewar () {
   initPaths()
   resetZoom()
   setupCanvas()
+
+  canvas.focus()
 }
 
 window.onload = spacewar

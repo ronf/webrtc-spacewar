@@ -29,9 +29,17 @@ html, body {
   touch-action: none;
 }
 
+body {
+  display: flex;
+  flex-flow: column;
+  min-height: calc(100vh - 4px - env(safe-area-inset-bottom));
+  text-align: center;
+}
+
 canvas {
   background-color: black;
   outline: none;
+  flex: 1 1 auto;
 }
 
 input {
@@ -60,8 +68,9 @@ input[type=button]:hover {
   flex-flow: column;
 }
 
-.center {
-  text-align: center;
+.bottom {
+  margin-top: auto;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .flex-row {
