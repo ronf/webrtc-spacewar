@@ -104,9 +104,12 @@ export default class TimingStats {
   }
 
   stats () {
-    return [this.skew, this.min() - this.skew,
-	    Math.round(this.avg - this.skew),
-	    this.max() - this.skew]
+    return [
+      this.skew,
+      this.min() - this.skew,
+      Math.round(this.avg - this.skew),
+      this.max() - this.skew
+    ]
   }
 
   updateSkew (other) {
