@@ -77,12 +77,15 @@ returning back to a circular orbit around the sun a few seconds later.
 This can also be used to avoid collisions, though there's no guarantee
 you won't collide with something when you come out of hyperspace.
 
-In addition to zooming the view in and out, you can click the mouse to
-re-center your game view on the position you click on, and if you click
-on a ship it will lock the view onto that ship, keeping it in the center
-of the screen for a "first person" view of the action. This is also a
-good way to see the details of the ship designs by clicking on them and
-then zooming all the way in.
+You can also drag with the mouse to change your current view, or zoom
+in and out with the scroll wheel or trackpad. Touch gestures can also
+be used on devices that support them, including pinch to zoom.
+
+Clicking on the sun will reset the view back to its initial default (same
+as hitting `R`). Clicking on a ship will lock the view onto that ship,
+keeping it in the center of the screen for a "first person" view of the
+action. This is also a good way to see the details of the ship designs
+by clicking on them and then zooming all the way in.
 
 Observer mode lets you watch a game without having your own ship. You
 can use `O` to toggle between observing and actively playing.
@@ -111,11 +114,11 @@ Key         Control
 Z           Zoom view in
 X           Zoom view out
 R           Reset view
-Left click  Re-center view
-C           Configure game
+C           Toggle config panel
 N           Toggle names
 O           Toggle observer mode
 P           Play/pause game
+T           Toggle timing panel
 =========== ====================
 
 Game Configuration
