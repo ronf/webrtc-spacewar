@@ -793,6 +793,11 @@ function spacewar () {
     setScale(lastScale * event.scale)
   }
 
+  function resize () {
+    canvas.width = 0
+    canvas.height = 0
+  }
+
   function setupCanvas () {
     canvas.width = canvas.clientWidth
     canvas.height = canvas.clientHeight
@@ -806,6 +811,8 @@ function spacewar () {
 
   function tick (now) {
     const interval = now - lastTick
+
+    if (canvas.width === 0) setupCanvas()
 
     ctx.resetTransform()
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -908,7 +915,7 @@ function spacewar () {
   cancelButton.onclick = revertConfig
   okButton.onclick = applyConfig
 
-  window.onresize = setupCanvas
+  window.onresize = resize
 
   if (config.useWebRTC) {
     relay = new WebRTCRelay(document.URL, config.rtcConfig)
